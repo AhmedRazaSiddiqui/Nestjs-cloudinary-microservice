@@ -1,11 +1,16 @@
 {
   "folders": [
-	{
-		"path": "../../main-app"
-	},
-	{
-		"path": ".."
-	}
-],
+    {
+      "name": "api-getway",
+      "path": "../../api-getway"
+    },
+    {
+      "name": "cloudinary-microservice",
+      "path": ".."
+    },
+    {
+      "path": "../../authorization"
+    }
+  ],
   "settings": {}
 }
