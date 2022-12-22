@@ -5,11 +5,12 @@
       "path": "../../api-getway"
     },
     {
-      "name": "cloudinary-microservice",
-      "path": ".."
+      "name": "authorization",
+      "path": "../../authorization"
     },
     {
-      "path": "../../authorization"
+      "name": "cloudinary-microservice",
+      "path": ".."
     }
   ],
   "settings": {}
