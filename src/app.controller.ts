@@ -1,10 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { EventPattern } from '@nestjs/microservices';
+import { EventPattern, MessagePattern } from '@nestjs/microservices';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Get()
   getHello(): string {
@@ -15,5 +19,10 @@ export class AppController {
   async handleUserCreated() {
     // business logic
     console.log('test micro service');
+  }
+
+  @MessagePattern({ cmd: 'upload-image' })
+  async handleFindUser(data: string): Promise<string> {
+    return await this.cloudinaryService.uploadBase64(data);
   }
 }
