@@ -10,6 +10,7 @@ import { AppService } from './app.service';
 import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 @Controller()
 export class AppController {
@@ -23,8 +24,17 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @Post('Local-Upload')
-  @UseInterceptors(FileInterceptor('file', { dest: 'files' }))
+  @Post('local-upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: 'upload-assets',
+        filename: (_req, file, callback) => {
+          callback(null, file.originalname);
+        },
+      }),
+    }),
+  )
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     return file.filename;
   }
