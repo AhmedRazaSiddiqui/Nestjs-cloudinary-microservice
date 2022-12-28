@@ -14,6 +14,10 @@ export class CloudinaryService {
     });
   }
 
+  async getFile(id: string): Promise<Record<string, any>> {
+    return await v2.api.resource(id);
+  }
+
   async deleteImage(id: string) {
     return new Promise<void>((resolve, reject) => {
       v2.uploader.destroy(id, (error) => {

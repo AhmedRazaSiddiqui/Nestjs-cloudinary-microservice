@@ -1,7 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern, MessagePattern } from '@nestjs/microservices';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller()
 export class AppController {
@@ -15,14 +23,29 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  @EventPattern('create-message')
-  async handleUserCreated() {
-    // business logic
-    console.log('test micro service');
+  @Post('Local-Upload')
+  @UseInterceptors(FileInterceptor('file', { dest: 'files' }))
+  uploadFile(@UploadedFile() file: Express.Multer.File) {
+    return file.filename;
   }
 
-  @MessagePattern({ cmd: 'upload-image' })
-  async handleFindUser(data: string): Promise<string> {
+  @Get('retrieve-file-from-cloudinary/:id')
+  async retrieveFile(@Param() { id }) {
+    return await this.cloudinaryService.getFile(id);
+  }
+
+  @MessagePattern({ cmd: 'retrieve-file-from-cloudinary' })
+  async handleRetrieveFile(id: string) {
+    return await this.cloudinaryService.getFile(id);
+  }
+
+  @Post('upload-file-to-cloudinary')
+  async ingestFile(data: string): Promise<string> {
+    return await this.cloudinaryService.uploadBase64(data);
+  }
+
+  @MessagePattern({ cmd: 'upload-file-to-cloudinary' })
+  async handleIngestFile(data: string): Promise<string> {
     return await this.cloudinaryService.uploadBase64(data);
   }
 }
